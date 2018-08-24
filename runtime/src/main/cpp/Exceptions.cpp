@@ -172,14 +172,14 @@ void ThrowException(KRef exception) {
 #endif
 }
 
-#if KONAN_OBJC_INTEROP
-
 void ReportUnhandledException(KRef e);
 
 static void (*oldTerminateHandler)() = nullptr;
 
 static void KonanTerminateHandler() {
   auto currentException = std::current_exception();
+
+  RuntimeCheck(oldTerminateHandler != nullptr, "Underlying terminate handler is not set.");
   if (!currentException) {
     // No current exception.
     oldTerminateHandler();
@@ -204,17 +204,7 @@ void SetKonanTerminateHandler() {
   LockGuard<SimpleMutex> lockGuard(konanTerminateHandlerInitializationMutex);
 
   if (oldTerminateHandler != nullptr) return; // Already initialized.
-
-  oldTerminateHandler = std::get_terminate(); // If termination happens between `set_terminate` and assignment.
   oldTerminateHandler = std::set_terminate(&KonanTerminateHandler);
 }
-
-#else // KONAN_OBJC_INTEROP
-
-void SetKonanTerminateHandler() {
-  // Nothing to do.
-}
-
-#endif // KONAN_OBJC_INTEROP
 
 } // extern "C"
