@@ -107,6 +107,16 @@ interface KotlinNativeLibrary : KotlinNativeBinary,
 interface KotlinNativeFramework : KotlinNativeBinary, ComponentWithOutputs
 
 /**
+ * A shared library compiled from KN sources
+ */
+interface KotlinNativeDynamic : KotlinNativeBinary, ComponentWithOutputs
+
+/**
+ * A static library compiled from KN sources
+ */
+interface KotlinNativeStatic : KotlinNativeBinary, ComponentWithOutputs
+
+/**
  * Represents a test executable.
  */
 // TODO: Consider implementing ComponentWithExecutable and ComponentWithInstallation.
